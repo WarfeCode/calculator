@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Комбинированный Калькулятор</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,6 +62,10 @@
             display: block;
             opacity: 1;
         }
+
+        canvas {
+            max-width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -73,6 +78,7 @@
         <option value="basic">Обычный калькулятор</option>
         <option value="fraction">Калькулятор дробей</option>
         <option value="trigonometry">Тригонометрический калькулятор</option>
+        <option value="graph">Графический калькулятор</option>
     </select>
 
     <div id="basic" class="calculator active">
@@ -102,6 +108,7 @@
         <button onclick="calculateFraction()">Рассчитать</button>
         <p id="fractionResult"></p>
     </div>
+
     <div id="trigonometry" class="calculator">
         <h2>Тригонометрический калькулятор</h2>
         <input type="number" id="angle" placeholder="Введите угол в градусах" />
@@ -112,6 +119,13 @@
         </select>
         <button onclick="calculateTrigonometry()">Рассчитать</button>
         <p id="trigResult"></p>
+    </div>
+
+    <div id="graph" class="calculator">
+        <h2>Графический калькулятор</h2>
+        <input type="text" id="functionInput" placeholder="Введите функцию (например, x^2)" />
+        <button onclick="drawGraph()">Нарисовать график</button>
+        <canvas id="myChart"></canvas>
     </div>
 </div>
 
@@ -199,47 +213,7 @@
         }
         document.getElementById("trigResult").innerText = "Результат: " + result;
     }
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Графический калькулятор</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #e0f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-        }
-        canvas {
-            max-width: 100%;
-        }
-    </style>
-</head>
-<body>
 
-<div class="container">
-    <h1>Графический калькулятор</h1>
-    <input type="text" id="functionInput" placeholder="Введите функцию (например, x^2)" />
-    <button onclick="drawGraph()">Нарисовать график</button>
-    <canvas id="myChart"></canvas>
-</div>
-
-<script>
     function drawGraph() {
         const ctx = document.getElementById('myChart').getContext('2d');
         const functionInput = document.getElementById('functionInput').value;
@@ -287,4 +261,3 @@
 
 </body>
 </html>
-
