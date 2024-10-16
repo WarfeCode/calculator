@@ -16,6 +16,7 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            transition: background-color 0.3s;
         }
 
         .container {
@@ -26,6 +27,7 @@
             max-width: 500px;
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, border 0.3s;
         }
 
         h1 {
@@ -40,6 +42,7 @@
             border: 1px solid #4CAF50;
             border-radius: 5px;
             font-size: 16px;
+            transition: border 0.3s;
         }
 
         button {
@@ -89,6 +92,15 @@
             border: 1px solid #1abc9c;
         }
 
+        body.dark-mode h1 {
+            color: #1abc9c;
+        }
+
+        body.dark-mode select, 
+        body.dark-mode input {
+            border: 1px solid #1abc9c;
+        }
+
         body.dark-mode button {
             background-color: #1abc9c;
         }
@@ -108,6 +120,12 @@
         <option value="trigonometry">Тригонометрический калькулятор</option>
         <option value="graph">Графический калькулятор</option>
     </select>
+    
+    <!-- Переключатель темной темы -->
+    <label>
+        <input type="checkbox" id="themeToggle" onclick="toggleTheme()" />
+        Темная тема
+    </label>
 
     <!-- Обычный калькулятор -->
     <div id="basic" class="calculator active">
@@ -181,6 +199,15 @@
         document.getElementById(mode).classList.add('active');
     }
 
+    function toggleTheme() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle.checked) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    }
+
     function calculateBasic() {
         const num1 = parseFloat(document.getElementById('num1').value);
         const num2 = parseFloat(document.getElementById('num2').value);
@@ -245,12 +272,13 @@
     function drawGraph() {
         const functionInput = document.getElementById('functionInput').value;
         const ctx = document.getElementById('myChart').getContext('2d');
+
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: Array.from({length: 100}, (_, i) => i - 50),
+                labels: Array.from({length: 100}, (_, x) => x - 50),
                 datasets: [{
-                    label: functionInput,
+                    label: 'График функции',
                     data: Array.from({length: 100}, (_, x) => eval(functionInput.replace(/x/g, x - 50))),
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2,
