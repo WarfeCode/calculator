@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комбинированный Калькулятор</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            max-width: 500px;
+        }
+        .hidden {
+            display: none;
+        }
+        input, select {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Комбинированный Калькулятор</h1>
+
+    <label for="mode">Выберите режим:</label>
+    <select id="mode" onchange="changeMode()">
+        <option value="basic">Обычный калькулятор</option>
+        <option value="fraction">Калькулятор дробей</option>
+        <option value="trigonometry">Тригонометрический калькулятор</option>
+    </select>
+
+    <div id="basic" class="calculator">
+        <h2>Обычный калькулятор</h2>
+        <input type="number" id="num1" placeholder="Введите первое число" />
+        <select id="operation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="number" id="num2" placeholder="Введите второе число" />
+        <button onclick="calculateBasic()">Рассчитать</button>
+        <p id="basicResult"></p>
+    </div>
+
+    <div id="fraction" class="calculator hidden">
+        <h2>Калькулятор дробей</h2>
+        <input type="text" id="fraction1" placeholder="Введите первую дробь (например, 1/2)" />
+        <select id="fractionOperation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="text" id="fraction2" placeholder="Введите вторую дробь (например, 1/3)" />
+        <button onclick="calculateFraction()">Рассчитать</button>
+        <p id="fractionResult"></p>
+    </div>
+
+    <div id="trigonometry" class="calculator hidden">
+        <h2>Тригонометрический калькулятор</h2>
+        <input type="number" id="angle" placeholder="Введите угол в градусах" />
+        <select id="trigonometryOperation">
+            <option value="sin">sin</option>
+            <option value="cos">cos</option>
+            <option value="tan">tan</option>
+        </select>
+        <button onclick="calculateTrigonometry()">Рассчитать</button>
+        <p id="trigonometryResult"></p>
+    </div>
+
+    <script>
+        function changeMode() {
+            const mode = document.getElementById('mode').value;
+            document.querySelectorAll('.calculator').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.getElementById(mode).classList.remove('hidden');
+        }
+
+        function calculateBasic() {
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const operation = document.getElementById('operation').value;
+            const num2 = parseFloat(document.getElementById('num2').value);
+            let result;
+
+            switch (operation) {
+                case '+':
+                    result = num1 + num2;
+                    break;
+                case '-':
+                    result = num1 - num2;
+                    break;
+                case '*':
+                    result = num1 * num2;
+                    break;
+                case '/':
+                    result = num2 !== 0 ? num1 / num2 : 'Ошибка: деление на ноль';
+                    break;
+                default:
+                    result = 'Неверная операция';
+            }
+            document.getElementById('basicResult').innerText = `Результат: ${result}`;
+        }
+
+        function calculateFraction() {
+            const fraction1 = document.getElementById('fraction1').value;
+            const fraction2 = document.getElementById('fraction2').value;
+            const operation = document.getElementById('fractionOperation').value;
+            const [num1, denom1] = fraction1.split('/').map(Number);
+            const [num2, denom2] = fraction2.split('/').map(Number);
+            let result;
+
+            switch (operation) {
+                case '+':
+                    result = `${num1 * denom2 + num2 * denom1}/${denom1 * denom2}`;
+                    break;
+                case '-':
+                    result = `${num1 * denom2 - num2 * denom1}/${denom1 * denom2}`;
+                    break;
+                case '*':
+                    result = `${num1 * num2}/${denom1 * denom2}`;
+                    break;
+                case '/':
+                    result = `${num1 * denom2}/${denom1 * num2}`;
+                    break;
+                default:
+                    result = 'Неверная операция';
+            }
+            document.getElementById('fractionResult').innerText = `Результат: ${result}`;
+        }
+
+        function calculateTrigonometry() {
+            const angle = parseFloat(document.getElementById('angle').value);
+            const operation = document.getElementById('trigonometryOperation').value;
+            let result;
+
+            switch (operation) {
+                case 'sin':
+                    result = Math.sin(angle * Math.PI / 180);
+                    break;
+                case 'cos':
+                    result = Math.cos(angle * Math.PI / 180);
+                    break;
+                case 'tan':
+                    result = Math.tan(angle * Math.PI / 180);
+                    break;
+                default:
+                    result = 'Неверная операция';
+            }
+            document.getElementById('trigonometryResult').innerText = `Результат: ${result}`;
+        }
+    </script>
+
+</body>
+</html>
