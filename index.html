@@ -3,50 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мульти-калькулятор</title>
+    <title>Калькулятор с вкладками</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        .tabs {
+        .tab-container {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            justify-content: center;
+            background-color: #4CAF50;
+            padding: 10px;
         }
 
-        .tabs button {
-            width: 32%;
+        .tab {
+            margin: 0 10px;
             padding: 10px;
-            font-size: 16px;
             cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            background-color: white;
+            border: 1px solid #ccc;
             border-radius: 5px;
         }
 
-        .tabs button.active {
+        .tab.active {
             background-color: #388E3C;
+            color: white;
         }
 
         .content {
             display: none;
+            padding: 20px;
         }
 
         .content.active {
@@ -56,145 +45,142 @@
         input, button {
             width: 100%;
             padding: 10px;
-            margin-top: 10px;
+            margin: 10px 0;
             font-size: 16px;
         }
 
         canvas {
             margin-top: 20px;
+            width: 100%;
+            height: 300px;
         }
+
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<div class="container">
-    <h1>Мульти-калькулятор</h1>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('basic')">Базовый</button>
-        <button class="tab-btn" onclick="switchTab('fraction')">Дробный</button>
-        <button class="tab-btn" onclick="switchTab('graph')">Графический</button>
+    <div class="tab-container">
+        <div class="tab active" onclick="switchTab('basic')">Базовый калькулятор</div>
+        <div class="tab" onclick="switchTab('fraction')">Дробный калькулятор</div>
+        <div class="tab" onclick="switchTab('graph')">Графический калькулятор</div>
     </div>
 
-    <!-- Базовый калькулятор -->
     <div id="basic" class="content active">
+        <h2>Базовый калькулятор</h2>
         <input type="text" id="basicInput" placeholder="Введите выражение (например, 2+2)" />
         <button onclick="calculateBasic()">Посчитать</button>
         <p>Результат: <span id="basicResult"></span></p>
     </div>
 
-    <!-- Дробный калькулятор -->
     <div id="fraction" class="content">
+        <h2>Дробный калькулятор</h2>
         <input type="number" id="numerator" placeholder="Числитель" />
         <input type="number" id="denominator" placeholder="Знаменатель" />
         <button onclick="calculateFraction()">Посчитать</button>
         <p>Результат: <span id="fractionResult"></span></p>
     </div>
 
-    <!-- Графический калькулятор -->
     <div id="graph" class="content">
+        <h2>Графический калькулятор</h2>
         <input type="text" id="coordinates" placeholder="Введите координаты (например, x1,y1; x2,y2)" />
         <input type="text" id="userFunction" placeholder="Введите функцию (например, x*x)" />
-        <button onclick="drawGraph()">Нарисовать график</button>
+        <button onclick="drawGraph()">Построить график</button>
         <canvas id="myChart"></canvas>
     </div>
-</div>
 
-<script>
-    // Переключение вкладок
-    function switchTab(tabId) {
-        document.querySelectorAll('.content').forEach(function (content) {
-            content.classList.remove('active');
-        });
-        document.querySelectorAll('.tab-btn').forEach(function (btn) {
-            btn.classList.remove('active');
-        });
-        document.getElementById(tabId).classList.add('active');
-        event.target.classList.add('active');
-    }
+    <script>
+        // Переключение вкладок
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.content');
+            const tabs = document.querySelectorAll('.tab');
 
-    // Базовый калькулятор
-    function calculateBasic() {
-        const input = document.getElementById('basicInput').value;
-        try {
-            const result = eval(input);
-            document.getElementById('basicResult').innerText = result;
-        } catch (error) {
-            document.getElementById('basicResult').innerText = 'Ошибка!';
-        }
-    }
+            contents.forEach(content => content.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-    // Дробный калькулятор
-    function calculateFraction() {
-        const numerator = parseFloat(document.getElementById('numerator').value);
-        const denominator = parseFloat(document.getElementById('denominator').value);
-
-        if (!denominator) {
-            document.getElementById('fractionResult').innerText = 'Знаменатель не может быть равен 0!';
-        } else {
-            const result = numerator / denominator;
-            document.getElementById('fractionResult').innerText = result;
-        }
-    }
-
-    // Графический калькулятор
-    function drawGraph() {
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const functionInput = document.getElementById('userFunction').value;
-
-        if (!functionInput) {
-            alert('Пожалуйста, введите функцию.');
-            return;
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
         }
 
-        const data = [];
-        const labels = [];
-
-        // Генерация данных для графика
-        for (let x = -10; x <= 10; x += 0.1) {
+        // Базовый калькулятор
+        function calculateBasic() {
+            const input = document.getElementById('basicInput').value;
             try {
-                const y = eval(functionInput.replace(/x/g, `(${x})`));
-                data.push(y);
-                labels.push(x);
+                const result = eval(input);
+                document.getElementById('basicResult').innerText = result;
             } catch (error) {
-                alert('Ошибка в функции! Проверьте синтаксис.');
+                document.getElementById('basicResult').innerText = 'Ошибка!';
+            }
+        }
+
+        // Дробный калькулятор
+        function calculateFraction() {
+            const numerator = parseFloat(document.getElementById('numerator').value);
+            const denominator = parseFloat(document.getElementById('denominator').value);
+
+            if (!denominator) {
+                document.getElementById('fractionResult').innerText = 'Знаменатель не может быть равен 0!';
+            } else {
+                const result = numerator / denominator;
+                document.getElementById('fractionResult').innerText = result;
+            }
+        }
+
+        // Графический калькулятор
+        function drawGraph() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const functionInput = document.getElementById('userFunction').value;
+
+            if (!functionInput) {
+                alert('Пожалуйста, введите функцию.');
                 return;
             }
-        }
 
-        if (window.myChart) {
-            window.myChart.destroy();
-        }
+            const data = [];
+            const labels = [];
 
-        const chartData = {
-            labels: labels,
-            datasets: [{
-                label: 'График функции',
-                data: data,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderWidth: 2,
-                fill: false
-            }]
-        };
-
-        window.myChart = new Chart(ctx, {
-            type: 'line',
-            data: chartData,
-            options: {
-                scales: {
-                    x: {
-                        beginAtZero: false
-                    },
-                    y: {
-                        beginAtZero: false
-                    }
+            for (let x = -10; x <= 10; x += 0.1) {
+                try {
+                    const y = eval(functionInput.replace(/x/g, `(${x})`));
+                    data.push(y);
+                    labels.push(x);
+                } catch (error) {
+                    alert('Ошибка в функции! Проверьте синтаксис.');
+                    return;
                 }
             }
-        });
-    }
-</script>
 
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'График функции',
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            };
+
+            window.myChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: false
+                        },
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
