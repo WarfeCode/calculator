@@ -68,3 +68,23 @@ input[type="text"]:focus {
     border-color: var(--header-color);
     outline: none;
 }
+button#toggleTheme {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: var(--button-background);
+    color: var(--button-text);
+    border: none;
+    padding: 15px 25px; /* Увеличенные отступы */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Увеличенный размер шрифта */
+    transition: background-color 0.3s ease, transform 0.2s ease, filter 0.2s ease;
+    z-index: 1000; /* Обеспечьте, чтобы кнопка была на верхнем слое */
+}
+
+button#toggleTheme:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+    filter: brightness(90%);
+}
