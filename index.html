@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Графический Калькулятор</title>
+    <title>Мульти-калькулятор</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,6 +29,33 @@
             font-size: 16px;
         }
 
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .tab.active {
+            background-color: #388E3C;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
         canvas {
             margin-top: 20px;
         }
@@ -38,21 +65,78 @@
 <body>
 
 <div class="container">
-    <h1>Графический Калькулятор</h1>
+    <h1>Мульти-калькулятор</h1>
 
-    <input type="text" id="coordinates" placeholder="Введите координаты (x1,y1; x2,y2; ...)" />
-    <input type="text" id="userFunction" placeholder="Введите функцию (например, x*x)" />
-    <button onclick="drawGraph()">Нарисовать график</button>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('basic')">Базовый калькулятор</div>
+        <div class="tab" onclick="switchTab('fraction')">Дробный калькулятор</div>
+        <div class="tab" onclick="switchTab('graph')">Графический калькулятор</div>
+    </div>
 
-    <canvas id="myChart"></canvas>
+    <!-- Базовый калькулятор -->
+    <div id="basic" class="content active">
+        <input type="text" id="basicInput" placeholder="Введите выражение (например, 2+2)" />
+        <button onclick="calculateBasic()">Посчитать</button>
+        <p>Результат: <span id="basicResult"></span></p>
+    </div>
+
+    <!-- Дробный калькулятор -->
+    <div id="fraction" class="content">
+        <input type="text" id="numerator" placeholder="Числитель" />
+        <input type="text" id="denominator" placeholder="Знаменатель" />
+        <button onclick="calculateFraction()">Посчитать</button>
+        <p>Результат: <span id="fractionResult"></span></p>
+    </div>
+
+    <!-- Графический калькулятор -->
+    <div id="graph" class="content">
+        <input type="text" id="coordinates" placeholder="Введите координаты (x1,y1; x2,y2; ...)" />
+        <input type="text" id="userFunction" placeholder="Введите функцию (например, x*x)" />
+        <button onclick="drawGraph()">Нарисовать график</button>
+
+        <canvas id="myChart"></canvas>
+    </div>
 </div>
 
 <script>
+    // Переключение вкладок
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.content').forEach(content => content.classList.remove('active'));
+
+        document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // Базовый калькулятор
+    function calculateBasic() {
+        const input = document.getElementById('basicInput').value;
+        try {
+            const result = eval(input);
+            document.getElementById('basicResult').innerText = result;
+        } catch (error) {
+            document.getElementById('basicResult').innerText = 'Ошибка!';
+        }
+    }
+
+    // Дробный калькулятор
+    function calculateFraction() {
+        const numerator = parseFloat(document.getElementById('numerator').value);
+        const denominator = parseFloat(document.getElementById('denominator').value);
+
+        if (!denominator) {
+            document.getElementById('fractionResult').innerText = 'Знаменатель не может быть равен 0!';
+        } else {
+            const result = numerator / denominator;
+            document.getElementById('fractionResult').innerText = result;
+        }
+    }
+
+    // Графический калькулятор
     function drawGraph() {
         const ctx = document.getElementById('myChart').getContext('2d');
         const functionInput = document.getElementById('userFunction').value;
 
-        // Проверка на правильность ввода функции
         if (!functionInput) {
             alert('Пожалуйста, введите функцию.');
             return;
@@ -64,7 +148,6 @@
         // Генерация данных для графика
         for (let x = -10; x <= 10; x += 0.1) {
             try {
-                // Используем eval, чтобы вычислить значение функции
                 const y = eval(functionInput.replace(/x/g, `(${x})`));
                 data.push(y);
                 labels.push(x);
@@ -74,7 +157,6 @@
             }
         }
 
-        // Удаление предыдущего графика
         if (window.myChart) {
             window.myChart.destroy();
         }
