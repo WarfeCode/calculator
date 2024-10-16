@@ -1,91 +1,76 @@
+/* styles.css */
+
 body {
+    background-color: #f4f4f4;
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #e0f7fa; /* Светло-голубой фон */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
-}
-
-.container {
-    border: 1px solid #4CAF50; /* Зеленая рамка */
-    border-radius: 10px; /* Закругленные углы */
-    padding: 20px;
-    width: 100%;
-    max-width: 500px; /* Максимальная ширина контейнера */
-    background-color: #ffffff; /* Белый фон контейнера */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень для контейнера */
+    padding: 0;
 }
 
 h1 {
     text-align: center;
-    color: #4CAF50; /* Зеленый цвет для заголовка */
+    color: #333;
+    margin: 20px 0;
 }
 
-label, h2 {
-    color: #333; /* Темно-серый цвет для текста */
-}
-
-select, input, button {
-    margin-bottom: 10px; /* Отступ снизу */
-    width: 100%; /* Ширина 100% */
-    padding: 10px; /* Внутренний отступ */
-    border: 1px solid #4CAF50; /* Зеленая граница */
-    border-radius: 5px; /* Закругленные углы для элементов ввода */
-    font-size: 16px; /* Размер шрифта */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 button {
-    background-color: #4CAF50; /* Зеленый фон для кнопок */
-    color: white; /* Белый цвет текста на кнопках */
-    cursor: pointer; /* Указатель при наведении на кнопки */
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 25px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-    background-color: #45a049; /* Темный зеленый фон при наведении на кнопки */
+    background-color: #0056b3; /* Цвет при наведении */
+    transform: scale(1.05); /* Увеличение кнопки при наведении */
 }
 
-.calculator {
-    display: none; /* Скрыть все калькуляторы по умолчанию */
-    opacity: 0; /* Начальная прозрачность */
-    transition: opacity 0.5s ease; /* Плавный переход для прозрачности */
+button:active {
+    transform: scale(0.95); /* Уменьшение кнопки при клике */
 }
 
-.calculator.active {
-    display: block; /* Показать активный калькулятор */
-    opacity: 1; /* Установить полную непрозрачность */
-}
-
-canvas {
-    max-width: 100%; /* Максимальная ширина для графика */
-}
-
-.coordinate-input {
-    display: flex; /* Используем flex для координат */
-    justify-content: space-between; /* Пространство между элементами */
-    margin-bottom: 10px; /* Отступ снизу */
-}
-
-.coordinate-input input {
-    width: 48%; /* Ширина 48% для ввода координат */
-}
-
-/* Анимация результата */
-.animate {
-    animation: bounce 0.5s ease-in-out;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
+@keyframes fadeIn {
+    from {
+        opacity: 0;
     }
-    40% {
-        transform: translateY(-10px);
-    }
-    60% {
-        transform: translateY(-5px);
+    to {
+        opacity: 1;
     }
 }
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.animated-background {
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Примените класс .fade-in к элементам, которые хотите анимировать */
