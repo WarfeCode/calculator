@@ -120,6 +120,7 @@
     <div id="graph" class="calculator">
         <h2>Графический калькулятор</h2>
         <input type="text" id="coordinates" placeholder="Введите координаты (x1,y1; x2,y2; ...)" />
+        <input type="text" id="userFunction" placeholder="Введите свою функцию (например, x*x)" />
         <select id="functionSelect">
             <option value="x*x">x^2</option>
             <option value="-x*x + 4">-x^2 + 4</option>
@@ -219,65 +220,47 @@
 
     function drawGraph() {
         const ctx = document.getElementById('myChart').getContext('2d');
-        const functionInput = document.getElementById('functionSelect').value;
+        const functionInput = document.getElementById('functionSelect').value || document.getElementById('userFunction').value;
         const coordinatesInput = document.getElementById('coordinates').value;
         const data = [];
         const labels = [];
 
         // Обработка координат
-        const coordinates = coordinatesInput.split(';').map(coord => coord.split(',').map(Number));
-        const points = coordinates.map(coord => ({ x: coord[0], y: eval(functionInput.replace(/x/g, coord[0])) }));
+        const coordinates = coordinatesInput.split(';').map(coord => {
+            const [x, y] = coord.split(',').map(Number);
+            return { x, y };
+        });
 
+        // Генерация данных для графика
         for (let x = -10; x <= 10; x += 0.1) {
             const y = eval(functionInput.replace(/x/g, x));
             data.push(y);
             labels.push(x);
         }
 
-        if (window.myChart) {
-            window.myChart.destroy();
-        }
+        const chartData = {
+            labels: labels,
+            datasets: [{
+                label: 'График',
+                data: data,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 1
+            }]
+        };
 
-        window.myChart = new Chart(ctx, {
+        const myChart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'График функции',
-                    data: data,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: false
-                },
-                {
-                    label: 'Координаты',
-                    data: points,
-                    backgroundColor: 'red',
-                    borderColor: 'red',
-                    borderWidth: 1,
-                    type: 'scatter',
-                    showLine: false
-                }]
-            },
+            data: chartData,
             options: {
                 scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'x'
-                        }
-                    },
                     y: {
-                        title: {
-                            display: true,
-                            text: 'y'
-                        }
+                        beginAtZero: true
                     }
                 }
-            }
+            });
         });
     }
 </script>
-
 </body>
 </html>
