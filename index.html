@@ -9,29 +9,26 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
-        .container {
-            background-color: white;
+        .calculator {
+            background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 90%;
-            max-width: 500px;
+            width: 100%;
+            max-width: 400px;
         }
         h1 {
             text-align: center;
             color: #333;
         }
         h2 {
-            color: #4CAF50; /* Цвет заголовка */
-        }
-        .hidden {
-            display: none;
+            color: #4CAF50;
         }
         input, select {
             margin-bottom: 10px;
@@ -41,34 +38,28 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        input:focus {
-            border-color: #4CAF50; /* Цвет рамки при фокусе */
-            outline: none;
-        }
         button {
             padding: 10px;
             border: none;
             border-radius: 5px;
             background-color: #4CAF50;
             color: white;
-            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
+            font-size: 16px;
         }
         button:hover {
             background-color: #45a049;
         }
-        p {
-            text-align: center;
+        .result {
+            margin-top: 15px;
             font-size: 18px;
-            color: #333; /* Цвет текста результата */
+            color: #333;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="calculator">
         <h1>Комбинированный Калькулятор</h1>
 
         <label for="mode">Выберите режим:</label>
@@ -78,7 +69,7 @@
             <option value="trigonometry">Тригонометрический калькулятор</option>
         </select>
 
-        <div id="basic" class="calculator">
+        <div id="basic" class="calc-mode">
             <h2>Обычный калькулятор</h2>
             <input type="number" id="num1" placeholder="Введите первое число" />
             <select id="operation">
@@ -89,10 +80,10 @@
             </select>
             <input type="number" id="num2" placeholder="Введите второе число" />
             <button onclick="calculateBasic()">Рассчитать</button>
-            <p id="basicResult"></p>
+            <p id="basicResult" class="result"></p>
         </div>
 
-        <div id="fraction" class="calculator hidden">
+        <div id="fraction" class="calc-mode hidden">
             <h2>Калькулятор дробей</h2>
             <input type="text" id="fraction1" placeholder="Введите первую дробь (например, 1/2)" />
             <select id="fractionOperation">
@@ -103,10 +94,10 @@
             </select>
             <input type="text" id="fraction2" placeholder="Введите вторую дробь (например, 1/3)" />
             <button onclick="calculateFraction()">Рассчитать</button>
-            <p id="fractionResult"></p>
+            <p id="fractionResult" class="result"></p>
         </div>
 
-        <div id="trigonometry" class="calculator hidden">
+        <div id="trigonometry" class="calc-mode hidden">
             <h2>Тригонометрический калькулятор</h2>
             <input type="number" id="angle" placeholder="Введите угол в градусах" />
             <select id="trigonometryOperation">
@@ -115,14 +106,14 @@
                 <option value="tan">tan</option>
             </select>
             <button onclick="calculateTrigonometry()">Рассчитать</button>
-            <p id="trigonometryResult"></p>
+            <p id="trigonometryResult" class="result"></p>
         </div>
     </div>
 
     <script>
         function changeMode() {
             const mode = document.getElementById('mode').value;
-            document.querySelectorAll('.calculator').forEach(el => {
+            document.querySelectorAll('.calc-mode').forEach(el => {
                 el.classList.add('hidden');
             });
             document.getElementById(mode).classList.remove('hidden');
