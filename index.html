@@ -1,455 +1,92 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ультра Калькулятор</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #a8e063, #56ab2f);
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+let currentInput = '';
+let operation = '';
+let firstOperand = null;
+
+function appendToInput(value) {
+    currentInput += value;
+    updateInputField();
+}
+
+function setOperation(op) {
+    if (currentInput === '') return;
+    if (firstOperand === null) {
+        firstOperand = parseFloat(currentInput);
+    } else {
+        calculate();
+    }
+    operation = op;
+    currentInput = '';
+}
+
+function calculate() {
+    if (firstOperand === null || currentInput === '') return;
+    const secondOperand = parseFloat(currentInput);
+    let result;
+    switch (operation) {
+        case '+':
+            result = firstOperand + secondOperand;
+            break;
+        case '-':
+            result = firstOperand - secondOperand;
+            break;
+        case '*':
+            result = firstOperand * secondOperand;
+            break;
+        case '/':
+            result = firstOperand / secondOperand;
+            break;
+        case 'sin':
+            result = Math.sin(toRadians(secondOperand));
+            break;
+        case 'cos':
+            result = Math.cos(toRadians(secondOperand));
+            break;
+        case 'tan':
+            result = Math.tan(toRadians(secondOperand));
+            break;
+        default:
+            return;
+    }
+    currentInput = result.toString();
+    firstOperand = null;
+    operation = '';
+    updateInputField();
+}
+
+function clearInput() {
+    currentInput = '';
+    firstOperand = null;
+    operation = '';
+    updateInputField();
+}
+
+function updateInputField() {
+    const inputs = document.querySelectorAll('input[type="text"]');
+    inputs.forEach(input => {
+        if (input.id === 'basicInput') {
+            input.value = currentInput;
+        } else if (input.id === 'fractionInput') {
+            input.value = currentInput;
+        } else if (input.id === 'trigInput') {
+            input.value = currentInput;
         }
-        .container {
-            background-color: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            width: 90%;
-            max-width: 600px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .tab {
-            display: flex;
-            justify-content: space-around;
-            cursor: pointer;
-            padding: 10px;
-            background-color: #56ab2f;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .tab:hover {
-            background-color: #4CAF50;
-        }
-        .calculator {
-            display: none;
-            margin-top: 20px;
-        }
-        .active {
-            display: block;
-        }
-        input, select {
-            margin-bottom: 10px;
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .result {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #333;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Ультра Калькулятор</h1>
-        <div class="tab" onclick="changeTab('basic')">Обычный калькулятор</div>
-        <div class="tab" onclick="changeTab('fraction')">Калькулятор дробей</div>
-        <div class="tab" onclick="changeTab('trigonometry')">Тригонометрический калькулятор</div>
-        <div class="tab" onclick="changeTab('scientific')">Научный калькулятор</div>
+    });
+}
 
-        <div id="basic" class="calculator">
-            <h2>Обычный калькулятор</h2>
-            <input type="number" id="num1" placeholder="Введите первое число" />
-            <select id="operation">
-                <option value="+">+</option>
-                <option value="-">-</option>
-                <option value="*">*</option>
-                <option value="/">/</option>
-            </select>
-            <input type="number" id="num2" placeholder="Введите второе число" />
-            <button onclick="calculateBasic()">Рассчитать</button>
-            <p id="basicResult" class="result"></p>
-        </div>
+function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+}
 
-        <!-- Начало второй части кода -->
-        <!-- Конец первой части кода -->
-        <div id="fraction" class="calculator">
-            <h2>Калькулятор дробей</h2>
-            <input type="number" id="numerator1" placeholder="Введите числитель первого дроби" />
-            <input type="number" id="denominator1" placeholder="Введите знаменатель первого дроби" />
-            <select id="fractionOperation">
-                <option value="+">+</option>
-                <option value="-">-</option>
-                <option value="*">*</option>
-                <option value="/">/</option>
-            </select>
-            <input type="number" id="numerator2" placeholder="Введите числитель второго дроби" />
-            <input type="number" id="denominator2" placeholder="Введите знаменатель второго дроби" />
-            <button onclick="calculateFraction()">Рассчитать</button>
-            <p id="fractionResult" class="result"></p>
-        </div>
+function showCalculator(calcType) {
+    const calculators = document.querySelectorAll('.calculator');
+    calculators.forEach(calc => {
+        calc.classList.remove('active');
+    });
+    document.getElementById(calcType).classList.add('active');
 
-        <div id="trigonometry" class="calculator">
-            <h2>Тригонометрический калькулятор</h2>
-            <input type="number" id="angle" placeholder="Введите угол в градусах" />
-            <select id="trigFunction">
-                <option value="sin">sin</option>
-                <option value="cos">cos</option>
-                <option value="tan">tan</option>
-            </select>
-            <button onclick="calculateTrigonometry()">Рассчитать</button>
-            <p id="trigResult" class="result"></p>
-        </div>
-
-        <div id="scientific" class="calculator">
-            <h2>Научный калькулятор</h2>
-            <input type="number" id="sciNum" placeholder="Введите число" />
-            <select id="sciOperation">
-                <option value="square">x²</option>
-                <option value="sqrt">√x</option>
-                <option value="log">log</option>
-            </select>
-            <button onclick="calculateScientific()">Рассчитать</button>
-            <p id="sciResult" class="result"></p>
-        </div>
-    </div>
-
-    <script>
-        function changeTab(tabName) {
-            const calculators = document.querySelectorAll('.calculator');
-            calculators.forEach(calc => {
-                calc.classList.remove('active');
-            });
-            document.getElementById(tabName).classList.add('active');
-        }
-
-        function calculateBasic() {
-            const num1 = parseFloat(document.getElementById('num1').value);
-            const num2 = parseFloat(document.getElementById('num2').value);
-            const operation = document.getElementById('operation').value;
-            let result;
-
-            switch (operation) {
-                case '+':
-                    result = num1 + num2;
-                    break;
-                case '-':
-                    result = num1 - num2;
-                    break;
-                case '*':
-                    result = num1 * num2;
-                    break;
-                case '/':
-                    result = num2 !== 0 ? num1 / num2 : 'Ошибка: деление на ноль';
-                    break;
-            }
-            document.getElementById('basicResult').textContent = `Результат: ${result}`;
-        }
-
-        function calculateFraction() {
-            const numerator1 = parseFloat(document.getElementById('numerator1').value);
-            const denominator1 = parseFloat(document.getElementById('denominator1').value);
-            const numerator2 = parseFloat(document.getElementById('numerator2').value);
-            const denominator2 = parseFloat(document.getElementById('denominator2').value);
-            const operation = document.getElementById('fractionOperation').value;
-            let result;
-
-            // Функции для выполнения операций над дробями
-            switch (operation) {
-                case '+':
-                    result = `${(numerator1 * denominator2 + numerator2 * denominator1)} / ${(denominator1 * denominator2)}`;
-                    break;
-                case '-':
-                    result = `${(numerator1 * denominator2 - numerator2 * denominator1)} / ${(denominator1 * denominator2)}`;
-                    break;
-                case '*':
-                    result = `${(numerator1 * numerator2)} / ${(denominator1 * denominator2)}`;
-                    break;
-                case '/':
-                    result = `${(numerator1 * denominator2)} / ${(denominator1 * numerator2)}`;
-                    break;
-            }
-            document.getElementById('fractionResult').textContent = `Результат: ${result}`;
-        }
-
-        function calculateTrigonometry() {
-            const angle = parseFloat(document.getElementById('angle').value);
-            const functionType = document.getElementById('trigFunction').value;
-            let result;
-
-            const radians = angle * (Math.PI / 180);
-            switch (functionType) {
-                case 'sin':
-                    result = Math.sin(radians);
-                    break;
-                case 'cos':
-                    result = Math.cos(radians);
-                    break;
-                case 'tan':
-                    result = Math.tan(radians);
-                    break;
-            }
-            document.getElementById('trigResult').textContent = `Результат: ${result}`;
-        }
-
-        function calculateScientific() {
-            const num = parseFloat(document.getElementById('sciNum').value);
-            const operation = document.getElementById('sciOperation').value;
-            let result;
-
-            switch (operation) {
-                case 'square':
-                    result = num * num;
-                    break;
-                case 'sqrt':
-                    result = Math.sqrt(num);
-                    break;
-                case 'log':
-                    result = Math.log(num);
-                    break;
-            }
-            document.getElementById('sciResult').textContent = `Результат: ${result}`;
-        }
-
-        // Показать первый калькулятор по умолчанию
-        changeTab('basic');
-    </script>
-</body>
-</html>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to right, #c2f0c2, #ffffff);
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            margin: 20px 0;
-            font-size: 2.5em;
-            color: #2a7d2c;
-        }
-
-        #tabs {
-            margin: 20px 0;
-        }
-
-        .tab-button {
-            cursor: pointer;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border: 2px solid #2a7d2c;
-            border-radius: 5px;
-            background: #f1f1f1;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .tab-button:hover {
-            background: #2a7d2c;
-            color: white;
-        }
-
-        .calculator {
-            display: none;
-            padding: 20px;
-            border: 1px solid #2a7d2c;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background: white;
-            width: 90%;
-            max-width: 600px;
-        }
-
-        .calculator.active {
-            display: block;
-        }
-
-        input[type="number"], select {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #2a7d2c;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-
-        button {
-            padding: 10px 15px;
-            background-color: #2a7d2c;
-            color: white;
-            border: none;
-           
-        button:hover {
-            background-color: #3cbf3c;
-        }
-
-        .result {
-            font-size: 1.5em;
-            margin-top: 20px;
-            color: #2a7d2c;
-        }
-    </style>
-</head>
-<body>
-    <h1>Калькуляторы</h1>
-    <div id="tabs">
-        <button class="tab-button" onclick="showCalculator('normal')">Обычный калькулятор</button>
-        <button class="tab-button" onclick="showCalculator('fraction')">Калькулятор дробей</button>
-        <button class="tab-button" onclick="showCalculator('trigonometric')">Тригонометрический калькулятор</button>
-    </div>
-
-    <div id="normal" class="calculator active">
-        <h2>Обычный калькулятор</h2>
-        <input type="number" id="normalInput1" placeholder="Введите первое число">
-        <input type="number" id="normalInput2" placeholder="Введите второе число">
-        <select id="normalOperation">
-            <option value="add">+</option>
-            <option value="subtract">-</option>
-            <option value="multiply">*</option>
-            <option value="divide">/</option>
-        </select>
-        <button onclick="calculateNormal()">Вычислить</button>
-        <div class="result" id="normalResult"></div>
-    </div>
-
-    <div id="fraction" class="calculator">
-        <h2>Калькулятор дробей</h2>
-        <input type="number" id="fractionNumerator1" placeholder="Числитель 1">
-        <input type="number" id="fractionDenominator1" placeholder="Знаменатель 1">
-        <input type="number" id="fractionNumerator2" placeholder="Числитель 2">
-        <input type="number" id="fractionDenominator2" placeholder="Знаменатель 2">
-        <select id="fractionOperation">
-            <option value="add">+</option>
-            <option value="subtract">-</option>
-            <option value="multiply">*</option>
-            <option value="divide">/</option>
-        </select>
-        <button onclick="calculateFraction()">Вычислить</button>
-        <div class="result" id="fractionResult"></div>
-    </div>
-
-    <div id="trigonometric" class="calculator">
-        <h2>Тригонометрический калькулятор</h2>
-        <input type="number" id="trigonometricInput" placeholder="Введите угол в градусах">
-        <select id="trigonometricFunction">
-            <option value="sin">sin</option>
-            <option value="cos">cos</option>
-            <option value="tan">tan</option>
-        </select>
-        <button onclick="calculateTrigonometric()">Вычислить</button>
-        <div class="result" id="trigonometricResult"></div>
-    </div>
-
-    <script>
-        function showCalculator(type) {
-            const calculators = document.querySelectorAll('.calculator');
-            calculators.forEach(calc => {
-                calc.classList.remove('active');
-            });
-            document.getElementById(type).classList.add('active');
-        }
-
-        function calculateNormal() {
-            const num1 = parseFloat(document.getElementById('normalInput1').value);
-            const num2 = parseFloat(document.getElementById('normalInput2').value);
-            const operation = document.getElementById('normalOperation').value;
-            let result;
-            switch (operation) {
-                case 'add':
-                    result = num1 + num2;
-                    break;
-                case 'subtract':
-                    result = num1 - num2;
-                    break;
-                case 'multiply':
-                    result = num1 * num2;
-                    break;
-                case 'divide':
-                    result = num1 / num2;
-                    break;
-            }
-            document.getElementById('normalResult').innerText = 'Результат: ' + result;
-        }
-
-        function calculateFraction() {
-            const num1 = parseFloat(document.getElementById('fractionNumerator1').value);
-            const denom1 = parseFloat(document.getElementById('fractionDenominator1').value);
-            const num2 = parseFloat(document.getElementById('fractionNumerator2').value);
-            const denom2 = parseFloat(document.getElementById('fractionDenominator2').value);
-            const operation = document.getElementById('fractionOperation').value;
-
-            let resultNumerator, resultDenominator;
-
-            switch (operation) {
-                case 'add':
-                    resultNumerator = (num1 * denom2) + (num2 * denom1);
-                    resultDenominator = denom1 * denom2;
-                    break;
-                case 'subtract':
-                    resultNumerator = (num1 * denom2) - (num2 * denom1);
-                    resultDenominator = denom1 * denom2;
-                    break;
-                case 'multiply':
-                    resultNumerator = num1 * num2;
-                    resultDenominator = denom1 * denom2;
-                    break;
-                case 'divide':
-                    resultNumerator = num1 * denom2;
-                    resultDenominator = denom1 * num2;
-                    break;
-            }
-            document.getElementById('fractionResult').innerText = 'Результат: ' + resultNumerator + '/' + resultDenominator;
-        }
-
-        function calculateTrigonometric() {
-            const angle = parseFloat(document.getElementById('trigonometricInput').value);
-            const functionType = document.getElementById('trigonometricFunction').value;
-
-            let result;
-            const radians = angle * (Math.PI / 180); // Переводим градусы в радианы
-
-            switch (functionType) {
-                case 'sin':
-                    result = Math.sin(radians);
-                    break;
-                case 'cos':
-                    result = Math.cos(radians);
-                    break;
-                case 'tan':
-                    result = Math.tan(radians);
-                    break;
-            }
-            document.getElementById('trigonometricResult').innerText = 'Результат: ' + result;
-        }
-    </script>
-</body>
-</html>
+    const tabs = document.querySelectorAll('.tab-button');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelector(`.tab-button[onclick="showCalculator('${calcType}')"]`).classList.add('active');
+}
