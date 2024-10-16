@@ -6,161 +6,96 @@
     <title>Комбинированный Калькулятор</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --background-color: #f0f0f0;
+            --text-color: #333;
+            --button-background: #4CAF50;
+            --button-hover: #45a049;
+            --button-text: white;
+            --header-color: #4CAF50;
+        }
+
         body {
+            background-color: var(--background-color);
+            color: var(--text-color);
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #e0f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .dark-mode {
-            background-color: #121212;
-            color: white;
-        }
-
-        .container {
-            border: 1px solid #4CAF50;
-            border-radius: 10px;
-            padding: 20px;
-            width: 100%;
-            max-width: 500px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
-        }
-
-        .dark-mode .container {
-            background-color: #1e1e1e;
-            border-color: #5fba7f;
-        }
-
-        h1 {
-            text-align: center;
-            color: #4CAF50;
-        }
-
-        select, input, button {
-            margin-bottom: 10px;
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #4CAF50;
-            border-radius: 5px;
-            font-size: 16px;
+        h1, h2 {
+            color: var(--header-color);
+            transition: color 0.3s ease;
         }
 
         button {
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--button-background);
+            color: var(--button-text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: var(--button-hover);
+            transform: scale(1.05);
+        }
+
+        .dark-mode {
+            --background-color: #181818;
+            --text-color: #e0e0e0;
+            --button-background: #555;
+            --button-hover: #666;
+            --header-color: #81c784;
         }
 
         .calculator {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
         }
 
-        .calculator.active {
-            display: block;
-            opacity: 1;
+        .calculator:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
-        canvas {
-            max-width: 100%;
-        }
-
-        .coordinate-input {
-            display: flex;
-            justify-content: space-between;
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
             margin-bottom: 10px;
+            transition: border 0.3s ease;
         }
 
-        .coordinate-input input {
-            width: 48%;
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--header-color);
+            outline: none;
         }
 
-        /* Добавляем стили для ползунка */
-        .theme-switch {
+        /* Новый стиль для кнопки смены темы */
+        #toggleTheme {
             position: fixed;
             top: 10px;
             right: 10px;
-            z-index: 1000;
-            width: 50px;
-            height: 26px;
-            background-color: #ccc;
-            border-radius: 50px;
+            background-color: var(--button-background);
+            color: var(--button-text);
+            border: none;
+            padding: 15px 25px; /* Увеличенные отступы */
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 16px; /* Увеличенный размер шрифта */
+            transition: background-color 0.3s ease, transform 0.2s ease, filter 0.2s ease;
+            z-index: 1000; /* Обеспечьте, чтобы кнопка была на верхнем слое */
         }
 
-        .theme-switch input {
-            opacity: 0;
-            position: absolute;
-        }
-
-        .theme-switch .slider {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: white;
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .theme-switch.light {
-            background-color: #ffcc00; /* Цвет для светлой темы */
-        }
-
-        .theme-switch.light .slider {
-            transform: translateX(0);
-        }
-
-        .theme-switch.dark {
-            background-color: #333; /* Цвет для тёмной темы */
-        }
-
-        .theme-switch.dark .slider {
-            transform: translateX(24px); /* Сдвиг ползунка для тёмной темы */
-        }
-
-        .sun-icon,
-        .moon-icon {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            transition: opacity 0.3s ease;
-        }
-
-        .sun-icon {
-            left: 5px;
-            opacity: 1; /* Солнце видно в светлой теме */
-        }
-
-        .moon-icon {
-            right: 5px;
-            opacity: 0; /* Луна скрыта в светлой теме */
-        }
-
-        .dark-mode .sun-icon {
-            opacity: 0; /* Солнце скрыто в тёмной теме */
-        }
-
-        .dark-mode .moon-icon {
-            opacity: 1; /* Луна видима в тёмной теме */
+        #toggleTheme:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.05);
+            filter: brightness(90%);
         }
     </style>
 </head>
@@ -233,204 +168,18 @@
         <button onclick="plotPoint()">Нарисовать точку</button>
         <canvas id="myChart"></canvas>
     </div>
-
-    <!-- Переключатель темы -->
-    <div class="theme-switch light">
-        <div class="sun-icon">☀️</div>
-        <div class="moon-icon">🌙</div>
-        <input type="checkbox" id="theme-toggle">
-        <div class="slider"></div>
-    </div>
 </div>
 
+<!-- Кнопка смены темы -->
+<button id="toggleTheme">Сменить тему</button>
+
+<script src="script.js"></script>
+<script src="animations.js"></script>
 <script>
-    // Переключение режима калькулятора
-    function changeMode() {
-        const mode = document.getElementById('mode').value;
-        const calculators = document.querySelectorAll('.calculator');
-        calculators.forEach(calculator => {
-            calculator.classList.remove('active');
-        });
-        document.getElementById(mode).classList.add('active');
-    }
+    const toggleButton = document.getElementById('toggleTheme');
 
-    // Расчет для обычного калькулятора
-    function calculateBasic() {
-        const num1 = parseFloat(document.getElementById('num1').value);
-        const operation = document.getElementById('operation').value;
-        const num2 = parseFloat(document.getElementById('num2').value);
-        let result;
-
-        switch (operation) {
-            case '+':
-                result = num1 + num2;
-                break;
-            case '-':
-                result = num1 - num2;
-                break;
-            case '*':
-                result = num1 * num2;
-                break;
-            case '/':
-                result = num1 / num2;
-                break;
-        }
-        document.getElementById('basicResult').textContent = `Результат: ${result}`;
-    }
-
-    // Расчет для калькулятора дробей
-    function calculateFraction() {
-        const fraction1 = document.getElementById('fraction1').value.split('/');
-        const fraction2 = document.getElementById('fraction2').value.split('/');
-        const num1 = parseInt(fraction1[0]);
-        const denom1 = parseInt(fraction1[1]);
-        const num2 = parseInt(fraction2[0]);
-        const denom2 = parseInt(fraction2[1]);
-        const operation = document.getElementById('fractionOperation').value;
-        let resultNum, resultDenom;
-
-        switch (operation) {
-            case '+':
-                resultNum = (num1 * denom2) + (num2 * denom1);
-                resultDenom = denom1 * denom2;
-                break;
-            case '-':
-                resultNum = (num1 * denom2) - (num2 * denom1);
-                resultDenom = denom1 * denom2;
-                break;
-            case '*':
-                resultNum = num1 * num2;
-                resultDenom = denom1 * denom2;
-                break;
-            case '/':
-                resultNum = num1 * denom2;
-                resultDenom = denom1 * num2;
-                break;
-        }
-        document.getElementById('fractionResult').textContent = `Результат: ${resultNum}/${resultDenom}`;
-    }
-
-    // Расчет для тригонометрического калькулятора
-    function calculateTrigonometry() {
-        const angle = parseFloat(document.getElementById('angle').value);
-        const operation = document.getElementById('trigOperation').value;
-        const radians = angle * (Math.PI / 180);
-        let result;
-
-        switch (operation) {
-            case 'sin':
-                result = Math.sin(radians);
-                break;
-            case 'cos':
-                result = Math.cos(radians);
-                break;
-            case 'tan':
-                result = Math.tan(radians);
-                break;
-        }
-        document.getElementById('trigResult').textContent = `Результат: ${result}`;
-    }
-
-    // Нарисовать график
-    function drawGraph() {
-        const functionInput = document.getElementById('functionInput').value;
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const chartData = {
-            labels: [],
-            datasets: [{
-                label: 'График функции',
-                data: [],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                fill: false,
-                tension: 0.1
-            }]
-        };
-
-        for (let x = -10; x <= 10; x += 0.1) {
-            const y = eval(functionInput.replace(/x/g, x)); // Используем eval для вычисления функции
-            chartData.labels.push(x);
-            chartData.datasets[0].data.push(y);
-        }
-
-        new Chart(ctx, {
-            type: 'line',
-            data: chartData,
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'X'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Y'
-                        }
-                    }
-                }
-            });
-    }
-
-    // Нарисовать точку на графике
-    function plotPoint() {
-        const x = parseFloat(document.getElementById('xCoord').value);
-        const y = parseFloat(document.getElementById('yCoord').value);
-        const ctx = document.getElementById('myChart').getContext('2d');
-
-        const chartData = {
-            labels: [],
-            datasets: [{
-                label: 'График функции',
-                data: [],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                fill: false,
-                tension: 0.1
-            }, {
-                label: 'Точки',
-                data: [{x, y}],
-                backgroundColor: 'rgba(255, 0, 0, 1)',
-                borderColor: 'rgba(255, 0, 0, 1)',
-                type: 'scatter',
-                showLine: false,
-                pointRadius: 5,
-            }]
-        };
-
-        for (let xVal = -10; xVal <= 10; xVal += 0.1) {
-            const yVal = eval(document.getElementById('functionInput').value.replace(/x/g, xVal));
-            chartData.labels.push(xVal);
-            chartData.datasets[0].data.push(yVal);
-        }
-
-        new Chart(ctx, {
-            type: 'scatter',
-            data: chartData,
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'X'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Y'
-                        }
-                    }
-                }
-            });
-    }
-
-    // Переключение темы
-    const themeToggle = document.getElementById('theme-toggle');
-    themeToggle.addEventListener('change', () => {
+    toggleButton.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
-        document.querySelector('.theme-switch').classList.toggle('dark');
-        document.querySelector('.theme-switch').classList.toggle('light');
     });
 </script>
 </body>
