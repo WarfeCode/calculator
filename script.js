@@ -64,65 +64,66 @@ function calculateFraction() {
             resultDen = den1 * num2;
             break;
     }
-    document.getElementById("fractionResult").innerText = "Результат: " + resultNum + '/' + resultDen;
+
+    document.getElementById("fractionResult").innerText = `Результат: ${resultNum}/${resultDen}`;
     animateResult("fractionResult");
 }
 
-// Функция для расчета тригонометрии
+// Функция для расчета тригонометрических значений
 function calculateTrigonometry() {
     const angle = parseFloat(document.getElementById("angle").value);
     const operation = document.getElementById("trigOperation").value;
+    const radians = angle * (Math.PI / 180);
     let result;
 
     switch (operation) {
         case "sin":
-            result = Math.sin(angle * Math.PI / 180);
+            result = Math.sin(radians);
             break;
         case "cos":
-            result = Math.cos(angle * Math.PI / 180);
+            result = Math.cos(radians);
             break;
         case "tan":
-            result = Math.tan(angle * Math.PI / 180);
+            result = Math.tan(radians);
             break;
     }
+
     document.getElementById("trigResult").innerText = "Результат: " + result;
     animateResult("trigResult");
 }
 
-// Функция для рисования графика
+// Функция для рисования графиков
 function drawGraph() {
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const functionInput = document.getElementById('functionInput').value;
-    const data = [];
-    const labels = [];
+    const functionInput = document.getElementById("functionInput").value;
+    const ctx = document.getElementById("myChart").getContext("2d");
+
+    const data = {
+        labels: [],
+        datasets: [{
+            label: 'График',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false,
+            tension: 0.1
+        }]
+    };
 
     for (let x = -10; x <= 10; x += 0.1) {
         const y = eval(functionInput.replace(/x/g, x));
-        data.push(y);
-        labels.push(x);
+        data.labels.push(x);
+        data.datasets[0].data.push(y);
     }
 
     if (chart) {
-        chart.destroy(); // Уничтожаем предыдущий график, если есть
+        chart.destroy();
     }
-
     chart = new Chart(ctx, {
         type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: functionInput,
-                data: data,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                fill: false,
-            }]
-        },
+        data: data,
         options: {
             scales: {
-                x: {
-                    type: 'linear',
-                    position: 'bottom',
-                }
+                x: { type: 'linear', position: 'bottom' },
+                y: { beginAtZero: true }
             }
         }
     });
@@ -130,27 +131,9 @@ function drawGraph() {
 
 // Функция для рисования точки на графике
 function plotPoint() {
-    const x = parseFloat(document.getElementById("xCoord").value);
-    const y = parseFloat(document.getElementById("yCoord").value);
-
-    if (chart) {
-        chart.data.datasets.push({
-            label: `Точка (${x}, ${y})`,
-            data: [{ x: x, y: y }],
-            borderColor: 'rgba(255, 99, 132, 1)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            pointRadius: 5,
-            showLine: false
-        });
-        chart.update();
-    }
-}
-
-// Анимация результата
-function animateResult(resultId) {
-    const resultElement = document.getElementById(resultId);
-    resultElement.classList.add('animate');
-    setTimeout(() => {
-        resultElement.classList.remove('animate');
-    }, 1000);
+    const xCoord = parseFloat(document.getElementById("xCoord").value);
+    const yCoord = parseFloat(document.getElementById("yCoord").value);
+    const ctx = document.getElementById("myChart").getContext("2d");
+    ctx.fillStyle = 'red';
+    ctx.fillRect(xCoord * 10 + 150, 150 - yCoord * 10, 5, 5); // координаты для отображения
 }
