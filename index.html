@@ -10,12 +10,12 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #e0f7fa;
+            background-color: #e0f7fa; /* Задний фон */
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             height: 100vh;
+            overflow: hidden;
         }
 
         .container {
@@ -33,7 +33,7 @@
             color: #4CAF50;
         }
 
-        input, button, select {
+        select, input, button {
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
@@ -52,9 +52,20 @@
             background-color: #45a049;
         }
 
+        .calculator {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease; /* Анимация при появлении */
+        }
+
+        .calculator.active {
+            display: block;
+            opacity: 1;
+        }
+
         canvas {
             max-width: 100%;
-            height: 400px; /* Установка высоты для графика */
+            height: 400px; /* Высота графика */
         }
     </style>
 </head>
@@ -62,77 +73,175 @@
 
 <div class="container">
     <h1>Комбинированный Калькулятор</h1>
-    <h2>Обычный Калькулятор</h2>
-    <input type="text" id="calcInput" placeholder="Введите выражение">
-    <button onclick="calculate()">Вычислить</button>
-    <h3>Результат: <span id="calcResult"></span></h3>
 
-    <h2>Графический Калькулятор</h2>
-    <label for="shape">Выберите фигуру:</label>
-    <select id="shape">
-        <option value="line">Диагональ (y = x)</option>
-        <option value="circle">Круг (x^2 + y^2 = r^2)</option>
-        <option value="parabola">Парабола (y = x^2)</option>
+    <label for="mode">Выберите режим:</label>
+    <select id="mode" onchange="changeMode()">
+        <option value="basic">Обычный калькулятор</option>
+        <option value="fraction">Калькулятор дробей</option>
+        <option value="trigonometry">Тригонометрический калькулятор</option>
+        <option value="graph">Графический калькулятор</option>
     </select>
-    <button onclick="drawGraph()">Нарисовать график</button>
-    <canvas id="myChart"></canvas>
+
+    <div id="basic" class="calculator active">
+        <h2>Обычный калькулятор</h2>
+        <input type="number" id="num1" placeholder="Введите первое число" />
+        <select id="operation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="number" id="num2" placeholder="Введите второе число" />
+        <button onclick="calculateBasic()">Рассчитать</button>
+        <p id="basicResult"></p>
+    </div>
+
+    <div id="fraction" class="calculator">
+        <h2>Калькулятор дробей</h2>
+        <input type="text" id="fraction1" placeholder="Введите первую дробь (например, 1/2)" />
+        <select id="fractionOperation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="text" id="fraction2" placeholder="Введите вторую дробь (например, 1/3)" />
+        <button onclick="calculateFraction()">Рассчитать</button>
+        <p id="fractionResult"></p>
+    </div>
+
+    <div id="trigonometry" class="calculator">
+        <h2>Тригонометрический калькулятор</h2>
+        <input type="number" id="angle" placeholder="Введите угол в градусах" />
+        <select id="trigOperation">
+            <option value="sin">Синус</option>
+            <option value="cos">Косинус</option>
+            <option value="tan">Тангенс</option>
+        </select>
+        <button onclick="calculateTrigonometry()">Рассчитать</button>
+        <p id="trigResult"></p>
+    </div>
+
+    <div id="graph" class="calculator">
+        <h2>Графический калькулятор</h2>
+        <input type="text" id="functionInput" placeholder="Введите уравнение (например, x*x или Math.sin(x))" />
+        <button onclick="drawGraph()">Нарисовать график</button>
+        <canvas id="myChart"></canvas>
+    </div>
 </div>
 
 <script>
-    // Обычный калькулятор
-    function calculate() {
-        const input = document.getElementById('calcInput').value;
-        try {
-            const result = eval(input); // Осторожно! eval может быть небезопасен, если ввод не проверен.
-            document.getElementById('calcResult').textContent = result;
-        } catch (error) {
-            document.getElementById('calcResult').textContent = 'Ошибка';
-        }
+    function changeMode() {
+        const mode = document.getElementById("mode").value;
+        const calculators = document.querySelectorAll(".calculator");
+        calculators.forEach(calc => {
+            calc.classList.remove("active");
+        });
+        document.getElementById(mode).classList.add("active");
     }
 
-    // Графический калькулятор
+    function calculateBasic() {
+        const num1 = parseFloat(document.getElementById("num1").value);
+        const operation = document.getElementById("operation").value;
+        const num2 = parseFloat(document.getElementById("num2").value);
+        let result;
+
+        switch (operation) {
+            case "+":
+                result = num1 + num2;
+                break;
+            case "-":
+                result = num1 - num2;
+                break;
+            case "*":
+                result = num1 * num2;
+                break;
+            case "/":
+                result = num1 / num2;
+                break;
+        }
+        document.getElementById("basicResult").innerText = "Результат: " + result;
+    }
+
+    function calculateFraction() {
+        const fraction1 = document.getElementById("fraction1").value.split('/');
+        const fraction2 = document.getElementById("fraction2").value.split('/');
+        const operation = document.getElementById("fractionOperation").value;
+
+        const num1 = parseInt(fraction1[0]);
+        const den1 = parseInt(fraction1[1]);
+        const num2 = parseInt(fraction2[0]);
+        const den2 = parseInt(fraction2[1]);
+
+        let resultNum, resultDen;
+
+        switch (operation) {
+            case "+":
+                resultNum = (num1 * den2) + (num2 * den1);
+                resultDen = den1 * den2;
+                break;
+            case "-":
+                resultNum = (num1 * den2) - (num2 * den1);
+                resultDen = den1 * den2;
+                break;
+            case "*":
+                resultNum = num1 * num2;
+                resultDen = den1 * den2;
+                break;
+            case "/":
+                resultNum = num1 * den2;
+                resultDen = den1 * num2;
+                break;
+        }
+        document.getElementById("fractionResult").innerText = "Результат: " + resultNum + '/' + resultDen;
+    }
+
+    function calculateTrigonometry() {
+        const angle = parseFloat(document.getElementById("angle").value);
+        const operation = document.getElementById("trigOperation").value;
+        let result;
+
+        switch (operation) {
+            case "sin":
+                result = Math.sin(angle * Math.PI / 180);
+                break;
+            case "cos":
+                result = Math.cos(angle * Math.PI / 180);
+                break;
+            case "tan":
+                result = Math.tan(angle * Math.PI / 180);
+                break;
+        }
+        document.getElementById("trigResult").innerText = "Результат: " + result;
+    }
+
     function drawGraph() {
         const ctx = document.getElementById('myChart').getContext('2d');
-        const shape = document.getElementById('shape').value;
+        const functionInput = document.getElementById('functionInput').value;
         const data = [];
         const labels = [];
 
         for (let x = -10; x <= 10; x += 0.1) {
-            let y;
-            switch (shape) {
-                case "line":
-                    y = x; // y = x (диагональ)
-                    break;
-                case "circle":
-                    y = Math.sqrt(25 - x * x); // Радиус r = 5
-                    data.push(y);
-                    labels.push(x);
-                    y = -Math.sqrt(25 - x * x); // Отрицательная часть
-                    break;
-                case "parabola":
-                    y = x * x; // y = x^2
-                    break;
+            try {
+                const y = eval(functionInput.replace(/x/g, x));
+                data.push(y);
+                labels.push(x);
+            } catch (error) {
+                alert('Ошибка в уравнении: ' + error.message);
+                return;
             }
-            data.push(y);
-            labels.push(x);
         }
 
-        // Удаляем предыдущий график, если он есть
-        if (window.chart) {
-            window.chart.destroy();
-        }
-
-        // Создание нового графика
-        window.chart = new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: shape === 'line' ? 'Диагональ' : shape === 'circle' ? 'Круг' : 'Парабола',
+                    label: 'График функции',
                     data: data,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: shape === 'circle', // Заполнение только для круга
+                    fill: true,
                 }]
             },
             options: {
@@ -148,9 +257,7 @@
                         title: {
                             display: true,
                             text: 'y'
-                        },
-                        min: -10, // Минимальное значение для оси Y
-                        max: 10   // Максимальное значение для оси Y
+                        }
                     }
                 }
             }
