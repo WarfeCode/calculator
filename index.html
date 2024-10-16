@@ -22,7 +22,7 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
+            max-width: 500px;
             width: 100%;
             animation: fadeIn 0.5s ease;
         }
@@ -82,12 +82,6 @@
             text-align: center;
             color: #333;
         }
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9em;
-            color: #333;
-        }
     </style>
 </head>
 <body>
@@ -115,7 +109,6 @@
             <button onclick="calculateBasic()">Рассчитать</button>
             <p id="basicResult"></p>
         </div>
-
         <div id="fraction" class="calculator">
             <h2>Калькулятор дробей</h2>
             <input type="text" id="fraction1" placeholder="Введите первую дробь (например, 1/2)" required />
@@ -141,10 +134,6 @@
             <button onclick="calculateTrigonometry()">Рассчитать</button>
             <p id="trigonometryResult"></p>
         </div>
-
-        <footer>
-            <p>© 2024 Калькулятор. Все права защищены.</p>
-        </footer>
     </div>
 
     <script>
@@ -230,5 +219,140 @@
         }
     </script>
 
+</body>
+</html>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #f3f4f6, #e5e7eb);
+            color: #333;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        select, input, button {
+            margin-bottom: 10px;
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .calculator {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .active {
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        p {
+            font-weight: bold;
+            margin-top: 10px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Комбинированный Калькулятор</h1>
+        <label for="mode">Выберите режим:</label>
+        <select id="mode" onchange="changeMode()">
+            <option value="basic">Обычный калькулятор</option>
+            <option value="fraction">Калькулятор дробей</option>
+            <option value="trigonometry">Тригонометрический калькулятор</option>
+        </select>
+
+        <div id="basic" class="calculator active">
+            <h2>Обычный калькулятор</h2>
+            <input type="number" id="num1" placeholder="Введите первое число" required />
+            <select id="operation">
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="*">*</option>
+                <option value="/">/</option>
+            </select>
+            <input type="number" id="num2" placeholder="Введите второе число" required />
+            <button onclick="calculateBasic()">Рассчитать</button>
+            <p id="basicResult"></p>
+        </div>
+
+        <div id="fraction" class="calculator hidden">
+            <h2>Калькулятор дробей</h2>
+            <input type="text" id="fraction1" placeholder="Введите первую дробь (например, 1/2)" required />
+            <select id="fractionOperation">
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="*">*</option>
+                <option value="/">/</option>
+            </select>
+            <input type="text" id="fraction2" placeholder="Введите вторую дробь (например, 1/3)" required />
+            <button onclick="calculateFraction()">Рассчитать</button>
+            <p id="fractionResult"></p>
+        </div>
+
+        <div id="trigonometry" class="calculator hidden">
+            <h2>Тригонометрический калькулятор</h2>
+            <input type="number" id="angle" placeholder="Введите угол в градусах" required />
+            <select id="trigonometryOperation">
+                <option value="sin">sin</option>
+                <option value="cos">cos</option>
+                <option value="tan">tan</option>
+            </select>
+            <button onclick="calculateTrigonometry()">Рассчитать</button>
+            <p id="trigonometryResult"></p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript остался без изменений
+    </script>
 </body>
 </html>
