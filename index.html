@@ -1,308 +1,43 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Комбинированный Калькулятор</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f4f8; /* Светлый фон */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            border: 1px solid #4CAF50;
-            border-radius: 10px;
-            padding: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            color: #4CAF50;
-        }
-
-        select, input, button {
-            margin-bottom: 15px;
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #4CAF50;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        select:focus, input:focus {
-            border-color: #45a049;
-            outline: none;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .calculator {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .calculator.active {
-            display: block;
-            opacity: 1;
-        }
-
-        canvas {
-            max-width: 100%;
-            margin-top: 20px;
-        }
-
-        .result {
-            margin-top: 10px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        /* Дополнительные стили для улучшения внешнего вида */
-        .calculator h2 {
-            margin-bottom: 15px;
-            font-size: 22px;
-            color: #4CAF50;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>Комбинированный Калькулятор</h1>
-
-    <label for="mode">Выберите режим:</label>
-    <select id="mode" onchange="changeMode()">
-        <option value="basic">Обычный калькулятор</option>
-        <option value="fraction">Калькулятор дробей</option>
-        <option value="trigonometry">Тригонометрический калькулятор</option>
-        <option value="graph">Графический калькулятор</option>
-    </select>
-
-    <div id="basic" class="calculator active">
-        <h2>Обычный калькулятор</h2>
-        <div class="form-group">
-            <input type="number" id="num1" placeholder="Введите первое число" />
-            <select id="operation">
-                <option value="+">+</option>
-                <option value="-">-</option>
-                <option value="*">*</option>
-                <option value="/">/</option>
-            </select>
-            <input type="number" id="num2" placeholder="Введите второе число" />
-        </div>
-        <button onclick="calculateBasic()">Рассчитать</button>
-        <p id="basicResult" class="result"></p>
-    </div>
-
-    <div id="fraction" class="calculator">
-        <h2>Калькулятор дробей</h2>
-        <div class="form-group">
-            <input type="text" id="fraction1" placeholder="Введите первую дробь (например, 1/2)" />
-            <select id="fractionOperation">
-                <option value="+">+</option>
-                <option value="-">-</option>
-                <option value="*">*</option>
-                <option value="/">/</option>
-            </select>
-            <input type="text" id="fraction2" placeholder="Введите вторую дробь (например, 1/3)" />
-        </div>
-        <button onclick="calculateFraction()">Рассчитать</button>
-        <p id="fractionResult" class="result"></p>
-    </div>
-
-    <div id="trigonometry" class="calculator">
-        <h2>Тригонометрический калькулятор</h2>
-        <div class="form-group">
-            <input type="number" id="angle" placeholder="Введите угол в градусах" />
-            <select id="trigOperation">
-                <option value="sin">Синус</option>
-                <option value="cos">Косинус</option>
-                <option value="tan">Тангенс</option>
-            </select>
-        </div>
-        <button onclick="calculateTrigonometry()">Рассчитать</button>
-        <p id="trigResult" class="result"></p>
-    </div>
-
-    <div id="graph" class="calculator">
-        <h2>Графический калькулятор</h2>
-        <div class="form-group">
-            <input type="text" id="functionInput" placeholder="Введите функцию (например, x^2)" />
-            <input type="text" id="coordInput" placeholder="Введите диапазон (например, -10,10)" />
-        </div>
-        <button onclick="drawGraph()">Нарисовать график</button>
-        <canvas id="myChart"></canvas>
-    </div>
-</div>
-
-<script>
-    function changeMode() {
-        const mode = document.getElementById("mode").value;
-        const calculators = document.querySelectorAll(".calculator");
-        calculators.forEach(calc => {
-            calc.classList.remove("active");
-        });
-        document.getElementById(mode).classList.add("active");
-    }
-
-    function calculateBasic() {
-        const num1 = parseFloat(document.getElementById("num1").value);
-        const operation = document.getElementById("operation").value;
-        const num2 = parseFloat(document.getElementById("num2").value);
-        let result;
-
-        switch (operation) {
-            case "+":
-                result = num1 + num2;
-                break;
-            case "-":
-                result = num1 - num2;
-                break;
-            case "*":
-                result = num1 * num2;
-                break;
-            case "/":
-                result = num1 / num2;
-                break;
-        }
-        document.getElementById("basicResult").innerText = "Результат: " + result;
-    }
-
-    function calculateFraction() {
-        const fraction1 = document.getElementById("fraction1").value.split('/');
-        const fraction2 = document.getElementById("fraction2").value.split('/');
-        const operation = document.getElementById("fractionOperation").value;
-
-        const num1 = parseInt(fraction1[0]);
-        const den1 = parseInt(fraction1[1]);
-        const num2 = parseInt(fraction2[0]);
-        const den2 = parseInt(fraction2[1]);
-
-        let resultNum, resultDen;
-
-        switch (operation) {
-            case "+":
-                resultNum = (num1 * den2) + (num2 * den1);
-                resultDen = den1 * den2;
-                break;
-            case "-":
-                resultNum = (num1 * den2) - (num2 * den1);
-                resultDen = den1 * den2;
-                break;
-            case "*":
-                resultNum = num1 * num2;
-                resultDen = den1 * den2;
-                break;
-            case "/":
-                resultNum = num1 * den2;
-                resultDen = den1 * num2;
-                break;
-        }
-        document.getElementById("fractionResult").innerText = "Результат: " + resultNum + '/' + resultDen;
-    }
-
-    function calculateTrigonometry() {
-        const angle = parseFloat(document.getElementById("angle").value);
-        const operation = document.getElementById("trigOperation").value;
-        let result;
-
-        switch (operation) {
-            case "sin":
-                result = Math.sin(angle * Math.PI / 180);
-                break;
-            case "cos":
-                result = Math.cos(angle * Math.PI / 180);
-                break;
-            case "tan":
-                result = Math.tan(angle * Math.PI / 180);
-                break;
-        }
-        document.getElementById("trigResult").innerText = "Результат: " + result;
-    }
-
-    function drawGraph() {
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const functionInput = document.getElementById('functionInput').value;
-        const coordInput = document.getElementById('coordInput').
-        const coordValues = coordInput.split(',');
-        const xMin = parseFloat(coordValues[0]);
-        const xMax = parseFloat(coordValues[1]);
-        const xValues = [];
-        const yValues = [];
-
-        for (let x = xMin; x <= xMax; x += 0.1) {
-            let y;
-            try {
-                y = eval(functionInput.replace(/x/g, x));
-                xValues.push(x);
-                yValues.push(y);
-            } catch (error) {
-                console.error('Ошибка в функции:', error);
-                alert('Ошибка в функции. Проверьте ввод.');
-                return;
-            }
-        }
-
-        const chart = new Chart(ctx, {
+chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: xValues,
+                labels: labels,
                 datasets: [{
-                    label: 'График функции',
-                    data: yValues,
-                    borderColor: '#4CAF50',
-                    borderWidth: 2,
-                    fill: false
+                    label: functionInput,
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    fill: false,
                 }]
             },
             options: {
-                responsive: true,
                 scales: {
                     x: {
-                        title: {
-                            display: true,
-                            text: 'X'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Y'
-                        }
+                        type: 'linear',
+                        position: 'bottom',
                     }
                 }
+            }
+        });
+    }
+
+    function plotPoint() {
+        const x = parseFloat(document.getElementById("xCoord").value);
+        const y = parseFloat(document.getElementById("yCoord").value);
+
+        if (chart) {
+            chart.data.datasets.push({
+                label: Точка (${x}, ${y}),
+                data: [{x: x, y: y}],
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                pointRadius: 5,
+                showLine: false
             });
-        };
+            chart.update();
+        }
     }
 </script>
 
 </body>
 </html>
+\
