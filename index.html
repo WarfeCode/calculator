@@ -10,7 +10,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #e0f7fa; /* Задний фон */
+            background-color: #e0f7fa;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -55,7 +55,7 @@
         .calculator {
             display: none;
             opacity: 0;
-            transition: opacity 0.5s ease; /* Анимация при появлении */
+            transition: opacity 0.5s ease;
         }
 
         .calculator.active {
@@ -124,6 +124,8 @@
     <div id="graph" class="calculator">
         <h2>Графический калькулятор</h2>
         <input type="text" id="functionInput" placeholder="Введите функцию (например, x*x)" />
+        <input type="number" id="startRange" placeholder="Начало диапазона (x)" />
+        <input type="number" id="endRange" placeholder="Конец диапазона (x)" />
         <button onclick="drawGraph()">Нарисовать график</button>
         <canvas id="myChart"></canvas>
     </div>
@@ -217,10 +219,12 @@
     function drawGraph() {
         const ctx = document.getElementById('myChart').getContext('2d');
         const functionInput = document.getElementById('functionInput').value;
+        const startRange = parseFloat(document.getElementById('startRange').value);
+        const endRange = parseFloat(document.getElementById('endRange').value);
         const data = [];
         const labels = [];
 
-        for (let x = -10; x <= 10; x += 0.1) {
+        for (let x = startRange; x <= endRange; x += 0.1) {
             let y; // Объявляем y
             try {
                 y = eval(functionInput.replace(/x/g, x));
@@ -246,19 +250,9 @@
                 }]
             },
             options: {
-                responsive: true,
                 scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'x'
-                        }
-                    },
                     y: {
-                        title: {
-                            display: true,
-                            text: 'y'
-                        }
+                        beginAtZero: false
                     }
                 }
             }
