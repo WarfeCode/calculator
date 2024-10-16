@@ -18,3 +18,12 @@ style.textContent = `
     }
 `;
 document.head.append(style);
+
+// Функция для добавления анимации к результату
+function animateResult(resultId) {
+    const resultElement = document.getElementById(resultId);
+    resultElement.classList.add('animate');
+    setTimeout(() => {
+        resultElement.classList.remove('animate');
+    }, 500); // Время анимации должно совпадать с duration в CSS
+}
