@@ -1,114 +1,38 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #e9ecef;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 600px;
-    margin: 50px auto;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-.calculator {
-    display: none;
-    margin-bottom: 20px;
-}
-
-.calculator.active {
-    display: block;
-}
-
-input[type="text"] {
-    width: 100%;
-    height: 40px;
-    font-size: 24px;
-    text-align: right;
-    margin-bottom: 10px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-button {
-    width: 48%;
-    padding: 10px;
-    font-size: 20px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.tabs {
-    text-align: center;
-}
-
-.tab-button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.tab-button:hover {
-    background-color: #0056b3;
-}
-
-.tab-button.active {
-    background-color: #0056b3;
-}
+// Переменные для хранения состояния калькулятора
 let currentInput = '';
 let operation = '';
 let firstOperand = null;
 
+// Функция для добавления значения в текущее поле ввода
 function appendToInput(value) {
     currentInput += value;
     updateInputField();
 }
 
+// Функция для установки операции
 function setOperation(op) {
     if (currentInput === '') return;
+
+    // Если первая операнда еще не установлена, устанавливаем ее
     if (firstOperand === null) {
         firstOperand = parseFloat(currentInput);
     } else {
         calculate();
     }
+
     operation = op;
     currentInput = '';
 }
 
+// Функция для выполнения вычислений
 function calculate() {
+    // Проверяем, установлены ли операнды и операция
     if (firstOperand === null || currentInput === '') return;
+
     const secondOperand = parseFloat(currentInput);
     let result;
 
+    // Выполняем вычисление в зависимости от операции
     switch (operation) {
         case '+':
             result = firstOperand + secondOperand;
@@ -134,12 +58,15 @@ function calculate() {
         default:
             return;
     }
+
+    // Обновляем текущее значение и сбрасываем операнды
     currentInput = result.toString();
     firstOperand = null;
     operation = '';
     updateInputField();
 }
 
+// Функция для очистки поля ввода
 function clearInput() {
     currentInput = '';
     firstOperand = null;
@@ -147,33 +74,32 @@ function clearInput() {
     updateInputField();
 }
 
+// Функция для обновления поля ввода
 function updateInputField() {
     const inputs = document.querySelectorAll('input[type="text"]');
     inputs.forEach(input => {
-        if (input.id === 'basicInput') {
-            input.value = currentInput;
-        } else if (input.id === 'fractionInput') {
-            input.value = currentInput;
-        } else if (input.id === 'trigInput') {
-            input.value = currentInput;
-        }
+        input.value = currentInput;
     });
 }
 
+// Функция для преобразования градусов в радианы
 function toRadians(degrees) {
     return degrees * (Math.PI / 180);
 }
 
+// Функция для отображения выбранного калькулятора
 function showCalculator(calcType) {
     const calculators = document.querySelectorAll('.calculator');
     calculators.forEach(calc => {
         calc.classList.remove('active');
     });
+
     document.getElementById(calcType).classList.add('active');
 
     const tabs = document.querySelectorAll('.tab-button');
     tabs.forEach(tab => {
         tab.classList.remove('active');
     });
+
     document.querySelector(`.tab-button[onclick="showCalculator('${calcType}')"]`).classList.add('active');
 }
