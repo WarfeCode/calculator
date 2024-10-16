@@ -10,7 +10,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #e0f7fa;
+            background-color: #e0f7fa; /* Задний фон */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -55,16 +55,12 @@
         .calculator {
             display: none;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s ease; /* Анимация при появлении */
         }
 
         .calculator.active {
             display: block;
             opacity: 1;
-        }
-
-        canvas {
-            max-width: 100%;
         }
     </style>
 </head>
@@ -108,7 +104,7 @@
         <button onclick="calculateFraction()">Рассчитать</button>
         <p id="fractionResult"></p>
     </div>
-    
+
     <div id="trigonometry" class="calculator">
         <h2>Тригонометрический калькулятор</h2>
         <input type="number" id="angle" placeholder="Введите угол в градусах" />
@@ -123,11 +119,10 @@
 
     <div id="graph" class="calculator">
         <h2>Графический калькулятор</h2>
-        <input type="text" id="functionInput" placeholder="Введите функцию (например, x*x)" />
-        <input type="number" id="startRange" placeholder="Начало диапазона (x)" />
-        <input type="number" id="endRange" placeholder="Конец диапазона (x)" />
+        <input type="text" id="shapeInput" placeholder="Введите фигуру (например, (1, 1), (2, 2), (3, 1))" />
         <button onclick="drawGraph()">Нарисовать график</button>
         <canvas id="myChart"></canvas>
+        <p id="graphResult"></p>
     </div>
 </div>
 
@@ -218,31 +213,18 @@
 
     function drawGraph() {
         const ctx = document.getElementById('myChart').getContext('2d');
-        const functionInput = document.getElementById('functionInput').value;
-        const startRange = parseFloat(document.getElementById('startRange').value);
-        const endRange = parseFloat(document.getElementById('endRange').value);
-        const data = [];
-        const labels = [];
-
-        for (let x = startRange; x <= endRange; x += 0.1) {
-            let y; // Объявляем y
-            try {
-                y = eval(functionInput.replace(/x/g, x));
-            } catch (e) {
-                console.error('Ошибка в функции: ', e);
-                alert('Пожалуйста, введите корректную функцию.');
-                return; // Прерываем выполнение, если произошла ошибка
-            }
-            data.push(y);
-            labels.push(x);
-        }
+        const shapeInput = document.getElementById('shapeInput').value;
+        const points = shapeInput.match(/\(([^)]+)\)/g).map(point => point.replace(/[()]/g, '').split(',').map(Number));
+        
+        const data = points.map(point => point[1]);
+        const labels = points.map(point => point[0]);
 
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'График функции',
+                    label: 'График фигуры',
                     data: data,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -250,15 +232,26 @@
                 }]
             },
             options: {
+                responsive: true,
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'x'
+                        }
+                    },
                     y: {
-                        beginAtZero: false
+                        title: {
+                            display: true,
+                            text: 'y'
+                        }
                     }
                 }
             }
         });
+        
+        document.getElementById("graphResult").innerText = "График построен.";
     }
 </script>
-
 </body>
 </html>
