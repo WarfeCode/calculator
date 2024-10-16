@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Комбинированный Калькулятор</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,7 +22,7 @@
             border-radius: 10px;
             padding: 20px;
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
@@ -63,6 +62,7 @@
             opacity: 1;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -119,10 +119,15 @@
 
     <div id="graph" class="calculator">
         <h2>Графический калькулятор</h2>
-        <input type="text" id="shapeInput" placeholder="Введите фигуру (например, (1, 1), (2, 2), (3, 1))" />
+        <select id="functionSelect">
+            <option value="x*x">x^2</option>
+            <option value="-x*x + 4">-x^2 + 4</option>
+            <option value="2*x + 1">2x + 1</option>
+            <option value="Math.sin(x)">sin(x)</option>
+            <option value="Math.cos(x)">cos(x)</option>
+        </select>
         <button onclick="drawGraph()">Нарисовать график</button>
         <canvas id="myChart"></canvas>
-        <p id="graphResult"></p>
     </div>
 </div>
 
@@ -213,18 +218,26 @@
 
     function drawGraph() {
         const ctx = document.getElementById('myChart').getContext('2d');
-        const shapeInput = document.getElementById('shapeInput').value;
-        const points = shapeInput.match(/\(([^)]+)\)/g).map(point => point.replace(/[()]/g, '').split(',').map(Number));
-        
-        const data = points.map(point => point[1]);
-        const labels = points.map(point => point[0]);
+        const functionInput = document.getElementById('functionSelect').value;
+        const data = [];
+        const labels = [];
 
-        const chart = new Chart(ctx, {
+        for (let x = -10; x <= 10; x += 0.1) {
+            const y = eval(functionInput.replace(/x/g, x));
+            data.push(y);
+            labels.push(x);
+        }
+
+        if (window.myChart) {
+            window.myChart.destroy();
+        }
+
+        window.myChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'График фигуры',
+                    label: 'График функции',
                     data: data,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -249,9 +262,8 @@
                 }
             }
         });
-        
-        document.getElementById("graphResult").innerText = "График построен.";
     }
 </script>
+
 </body>
 </html>
