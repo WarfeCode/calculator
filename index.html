@@ -119,6 +119,7 @@
 
     <div id="graph" class="calculator">
         <h2>Графический калькулятор</h2>
+        <input type="text" id="coordinates" placeholder="Введите координаты (x1,y1; x2,y2; ...)" />
         <select id="functionSelect">
             <option value="x*x">x^2</option>
             <option value="-x*x + 4">-x^2 + 4</option>
@@ -219,8 +220,13 @@
     function drawGraph() {
         const ctx = document.getElementById('myChart').getContext('2d');
         const functionInput = document.getElementById('functionSelect').value;
+        const coordinatesInput = document.getElementById('coordinates').value;
         const data = [];
         const labels = [];
+
+        // Обработка координат
+        const coordinates = coordinatesInput.split(';').map(coord => coord.split(',').map(Number));
+        const points = coordinates.map(coord => ({ x: coord[0], y: eval(functionInput.replace(/x/g, coord[0])) }));
 
         for (let x = -10; x <= 10; x += 0.1) {
             const y = eval(functionInput.replace(/x/g, x));
@@ -240,12 +246,20 @@
                     label: 'График функции',
                     data: data,
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true,
+                    borderWidth: 2,
+                    fill: false
+                },
+                {
+                    label: 'Координаты',
+                    data: points,
+                    backgroundColor: 'red',
+                    borderColor: 'red',
+                    borderWidth: 1,
+                    type: 'scatter',
+                    showLine: false
                 }]
             },
             options: {
-                responsive: true,
                 scales: {
                     x: {
                         title: {
