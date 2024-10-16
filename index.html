@@ -1,4 +1,140 @@
-<!-- Графический калькулятор -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комбинированный Калькулятор</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e0f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            border: 1px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        select, input, button {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .calculator {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .calculator.active {
+            display: block;
+            opacity: 1;
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+
+        .coordinate-input {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .coordinate-input input {
+            width: 48%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Комбинированный Калькулятор</h1>
+
+    <label for="mode">Выберите режим:</label>
+    <select id="mode" onchange="changeMode()">
+        <option value="basic">Обычный калькулятор</option>
+        <option value="fraction">Калькулятор дробей</option>
+        <option value="trigonometry">Тригонометрический калькулятор</option>
+        <option value="graph">Графический калькулятор</option>
+    </select>
+
+    <!-- Обычный калькулятор -->
+    <div id="basic" class="calculator active">
+        <h2>Обычный калькулятор</h2>
+        <input type="number" id="num1" placeholder="Введите первое число" />
+        <select id="operation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="number" id="num2" placeholder="Введите второе число" />
+        <button onclick="calculateBasic()">Рассчитать</button>
+        <p id="basicResult"></p>
+    </div>
+
+    <!-- Калькулятор дробей -->
+    <div id="fraction" class="calculator">
+        <h2>Калькулятор дробей</h2>
+        <input type="text" id="fraction1" placeholder="Введите первую дробь (например, 1/2)" />
+        <select id="fractionOperation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="text" id="fraction2" placeholder="Введите вторую дробь (например, 1/3)" />
+        <button onclick="calculateFraction()">Рассчитать</button>
+        <p id="fractionResult"></p>
+    </div>
+
+    <!-- Тригонометрический калькулятор -->
+    <div id="trigonometry" class="calculator">
+        <h2>Тригонометрический калькулятор</h2>
+        <input type="number" id="angle" placeholder="Введите угол в градусах" />
+        <select id="trigOperation">
+            <option value="sin">Синус</option>
+            <option value="cos">Косинус</option>
+            <option value="tan">Тангенс</option>
+        </select>
+        <button onclick="calculateTrigonometry()">Рассчитать</button>
+        <p id="trigResult"></p>
+    </div>
+
+    <!-- Графический калькулятор -->
     <div id="graph" class="calculator">
         <h2>Графический калькулятор</h2>
         <div>
@@ -117,7 +253,8 @@
         if (chart) {
             chart.destroy(); // Уничтожаем предыдущий график, если есть
         }
-chart = new Chart(ctx, {
+
+        chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
@@ -145,7 +282,7 @@ chart = new Chart(ctx, {
 
         if (chart) {
             chart.data.datasets.push({
-                label: Точка (${x}, ${y}),
+                label: `Точка (${x}, ${y})`,
                 data: [{x: x, y: y}],
                 borderColor: 'rgba(255, 99, 132, 1)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
