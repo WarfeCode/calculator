@@ -67,78 +67,56 @@
             max-width: 100%;
         }
 
+        .coordinate-input {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .coordinate-input input {
+            width: 48%;
+        }
+
         .theme-toggle {
             position: fixed;
             top: 10px;
             right: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 24px;
-        }
-
-        .theme-toggle input[type="checkbox"] {
-            display: none;
-        }
-
-        .slider {
-            width: 50px;
-            height: 25px;
-            background-color: #ccc;
-            border-radius: 34px;
-            position: relative;
             cursor: pointer;
         }
 
-        .slider::before {
-            content: "🌞";
-            position: absolute;
-            top: 50%;
-            left: 5px;
-            transform: translateY(-50%);
-            transition: all 0.3s;
+        .theme-toggle input {
+            display: none;
         }
 
-        .slider::after {
-            content: "🌛";
-            position: absolute;
-            top: 50%;
-            right: 5px;
-            transform: translateY(-50%);
-            opacity: 0;
-            transition: all 0.3s;
+        .toggle-track {
+            width: 50px;
+            height: 24px;
+            background-color: #ccc;
+            border-radius: 12px;
+            position: relative;
+            transition: background-color 0.3s ease;
         }
 
-        .slider .toggle-circle {
-            position: absolute;
-            top: 3px;
-            left: 3px;
+        .toggle-thumb {
             width: 20px;
             height: 20px;
-            background-color: white;
+            background-color: yellow;
             border-radius: 50%;
-            transition: all 0.3s;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
         }
 
-        input[type="checkbox"]:checked + .slider::before {
-            opacity: 0;
-        }
-
-        input[type="checkbox"]:checked + .slider::after {
-            opacity: 1;
-        }
-
-        input[type="checkbox"]:checked + .slider .toggle-circle {
-            transform: translateX(25px);
-        }
-
-        body.dark-mode {
-            background-color: #121212;
-            color: white;
-        }
-
-        body.dark-mode .container {
+        input:checked + .toggle-track {
             background-color: #333;
+        }
+
+        input:checked + .toggle-track .toggle-thumb {
+            background-color: #f0e68c;
+            transform: translateX(26px);
         }
     </style>
 </head>
@@ -213,53 +191,42 @@
     </div>
 </div>
 
+<!-- Тема переключатель -->
 <div class="theme-toggle">
     <input type="checkbox" id="themeSwitch">
-    <label for="themeSwitch" class="slider">
-        <div class="toggle-circle"></div>
+    <label for="themeSwitch" class="toggle-track">
+        <div class="toggle-thumb"></div>
     </label>
 </div>
 
 <script>
-    const themeSwitch = document.getElementById('themeSwitch');
-
-    themeSwitch.addEventListener('change', () => {
-        document.body.classList.toggle('dark-mode');
-    });
-
+    // Переключение режимов калькулятора
     function changeMode() {
-        const selectedMode = document.getElementById('mode').value;
+        const mode = document.getElementById('mode').value;
         document.querySelectorAll('.calculator').forEach(calculator => {
             calculator.classList.remove('active');
         });
-        document.getElementById(selectedMode).classList.add('active');
+        document.getElementById(mode).classList.add('active');
     }
 
+    // Обычный калькулятор
     function calculateBasic() {
         const num1 = parseFloat(document.getElementById('num1').value);
         const num2 = parseFloat(document.getElementById('num2').value);
         const operation = document.getElementById('operation').value;
         let result;
-
-        switch (operation) {
-            case '+':
-                result = num1 + num2;
-                break;
-            case '-':
-                result = num1 - num2;
-                break;
-            case '*':
-                result = num1 * num2;
-                break;
-            case '/':
-                result = num1 / num2;
-                break;
-            default:
-                result = 'Ошибка';
-        }
-
-        document.getElementById('basicResult').innerText = 'Результат: ' + result;
+        if (operation === '+') result = num1 + num2;
+        if (operation === '-') result = num1 - num2;
+        if (operation === '*') result = num1 * num2;
+        if (operation === '/') result = num1 / num2;
+        document.getElementById('basicResult').innerText = `Результат: ${result}`;
     }
+
+    // Переключение темной и светлой темы
+    const themeSwitch = document.getElementById('themeSwitch');
+    themeSwitch.addEventListener('change', () => {
+        document.body.classList.toggle('dark-mode');
+    });
 </script>
 
 </body>
