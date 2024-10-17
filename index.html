@@ -27,9 +27,22 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s;
+            position: relative; /* Для фона */
+            overflow: hidden; /* Убираем переполнение */
         }
         .dark-mode .calculator {
             background-color: #444;
+        }
+        .calculator:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1494789602883-1d36b6a7c20c') no-repeat center center / cover; /* Фон */
+            opacity: 0.1; /* Прозрачность фона */
+            z-index: -1; /* Позади всех элементов */
         }
         input, select {
             margin: 10px 0;
@@ -99,13 +112,16 @@
         #themeIcon {
             position: absolute;
             top: 50%;
-            left: 10%;
+            left: 5px;
             transform: translateY(-50%);
             font-size: 16px;
             transition: color 0.3s;
         }
         .dark-mode #themeIcon {
             color: white;
+        }
+        .graph-section {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -154,13 +170,11 @@
             <button onclick="calculateTrigonometry()">Рассчитать</button>
             <p id="trigResult">Результат: </p>
         </div>
-        <div>
+        <div class="graph-section">
             <h2>График функции</h2>
             <input type="text" id="functionInput" placeholder="Введите функцию (например, x*x)">
             <button onclick="drawGraph()">Нарисовать график</button>
             <canvas id="myChart" width="400" height="400"></canvas>
-        </div>
-        <div>
             <h2>Точка на графике</h2>
             <input type="number" id="xCoord" placeholder="Введите координату X">
             <input type="number" id="yCoord" placeholder="Введите координату Y">
@@ -234,8 +248,9 @@
         function calculateTrigonometry() {
             const angle = parseFloat(document.getElementById('angle').value);
             const operation = document.getElementById('trigOperation').value;
-            const radians = angle * (Math.PI / 180);
             let result;
+
+            const radians = angle * (Math.PI / 180);
 
             switch (operation) {
                 case 'sin':
