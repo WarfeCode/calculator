@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Комбинированный Калькулятор</title>
+    <title>Комбинированный Калькулятор с Темой</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -16,6 +16,12 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
         }
 
         .container {
@@ -91,36 +97,47 @@
         }
 
         .toggle-track {
-            width: 50px;
-            height: 24px;
+            width: 60px;
+            height: 30px;
             background-color: #ccc;
-            border-radius: 12px;
+            border-radius: 15px;
             position: relative;
             transition: background-color 0.3s ease;
         }
 
         .toggle-thumb {
-            width: 20px;
-            height: 20px;
+            width: 28px;
+            height: 28px;
             background-color: yellow;
             border-radius: 50%;
             position: absolute;
-            top: 2px;
-            left: 2px;
+            top: 1px;
+            left: 1px;
             transition: all 0.3s ease;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1163/1163661.png'); /* Иконка солнца */
+            background-size: cover;
+        }
+
+        input:checked + .toggle-track .toggle-thumb {
+            background-color: #f0e68c;
+            transform: translateX(30px);
+            background-image: url('https://cdn-icons-png.flaticon.com/512/869/869869.png'); /* Иконка луны */
+            background-size: cover;
         }
 
         input:checked + .toggle-track {
             background-color: #333;
         }
-
-        input:checked + .toggle-track .toggle-thumb {
-            background-color: #f0e68c;
-            transform: translateX(26px);
-        }
     </style>
 </head>
 <body>
+<div class="theme-toggle">
+    <input type="checkbox" id="themeSwitch">
+    <label for="themeSwitch" class="toggle-track">
+        <div class="toggle-thumb"></div>
+    </label>
+</div>
+
 <div class="container">
     <h1>Комбинированный Калькулятор</h1>
     <label for="mode">Выберите режим:</label>
@@ -191,43 +208,24 @@
     </div>
 </div>
 
-<!-- Тема переключатель -->
-<div class="theme-toggle">
-    <input type="checkbox" id="themeSwitch">
-    <label for="themeSwitch" class="toggle-track">
-        <div class="toggle-thumb"></div>
-    </label>
-</div>
-
+<script src="script.js"></script>
+<script src="animations.js"></script>
 <script>
-    // Переключение режимов калькулятора
-    function changeMode() {
-        const mode = document.getElementById('mode').value;
-        document.querySelectorAll('.calculator').forEach(calculator => {
-            calculator.classList.remove('active');
-        });
-        document.getElementById(mode).classList.add('active');
-    }
-
-    // Обычный калькулятор
-    function calculateBasic() {
-        const num1 = parseFloat(document.getElementById('num1').value);
-        const num2 = parseFloat(document.getElementById('num2').value);
-        const operation = document.getElementById('operation').value;
-        let result;
-        if (operation === '+') result = num1 + num2;
-        if (operation === '-') result = num1 - num2;
-        if (operation === '*') result = num1 * num2;
-        if (operation === '/') result = num1 / num2;
-        document.getElementById('basicResult').innerText = `Результат: ${result}`;
-    }
-
     // Переключение темной и светлой темы
     const themeSwitch = document.getElementById('themeSwitch');
     themeSwitch.addEventListener('change', () => {
         document.body.classList.toggle('dark-mode');
     });
-</script>
 
+    function changeMode() {
+        const mode = document.getElementById("mode").value;
+        const calculators = document.querySelectorAll('.calculator');
+        calculators.forEach(calc => calc.classList.remove('active'));
+
+        document.getElementById(mode).classList.add('active');
+    }
+
+    // Дописать сюда функции для каждого типа калькулятора
+</script>
 </body>
 </html>
