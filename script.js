@@ -137,3 +137,68 @@ function plotPoint() {
     ctx.fillStyle = 'red';
     ctx.fillRect(xCoord * 10 + 150, 150 - yCoord * 10, 5, 5); // координаты для отображения
 }
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class Calculator extends Application {
+    
+    private TextField input1;
+    private TextField input2;
+    private Label resultLabel;
+    
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Калькулятор");
+
+        input1 = new TextField();
+        input1.setPromptText("Введите первое число");
+
+        input2 = new TextField();
+        input2.setPromptText("Введите второе число");
+
+        ComboBox<String> operation = new ComboBox<>();
+        operation.getItems().addAll("+", "-", "*", "/");
+        operation.setValue("+");
+
+        Button calculateButton = new Button("Рассчитать");
+        calculateButton.setOnAction(e -> calculate(operation.getValue()));
+
+        resultLabel = new Label("Результат: ");
+
+        VBox vbox = new VBox(10, input1, operation, input2, calculateButton, resultLabel);
+        Scene scene = new Scene(vbox, 300, 200);
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void calculate(String operation) {
+        double num1 = Double.parseDouble(input1.getText());
+        double num2 = Double.parseDouble(input2.getText());
+        double result = 0;
+
+        switch (operation) {
+            case "+":
+                result = num1 + num2;
+                break;
+            case "-":
+                result = num1 - num2;
+                break;
+            case "*":
+                result = num1 * num2;
+                break;
+            case "/":
+                result = num1 / num2;
+                break;
+        }
+        
+        resultLabel.setText("Результат: " + result);
+    }
+}
