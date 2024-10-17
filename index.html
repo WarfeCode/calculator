@@ -208,8 +208,6 @@
     </div>
 </div>
 
-<script src="script.js"></script>
-<script src="animations.js"></script>
 <script>
     // Переключение темной и светлой темы
     const themeSwitch = document.getElementById('themeSwitch');
@@ -225,7 +223,129 @@
         document.getElementById(mode).classList.add('active');
     }
 
-    // Дописать сюда функции для каждого типа калькулятора
+    // Обычный калькулятор
+    function calculateBasic() {
+        const num1 = parseFloat(document.getElementById("num1").value);
+        const operation = document.getElementById("operation").value;
+        const num2 = parseFloat(document.getElementById("num2").value);
+        let result;
+
+        switch (operation) {
+            case '+':
+                result = num1 + num2;
+                break;
+            case '-':
+                result = num1 - num2;
+                break;
+            case '*':
+                result = num1 * num2;
+                break;
+            case '/':
+                result = num1 / num2;
+                break;
+        }
+        document.getElementById("basicResult").textContent = "Результат: " + result;
+    }
+
+    // Калькулятор дробей
+    function calculateFraction() {
+        const fraction1 = document.getElementById("fraction1").value;
+        const operation = document.getElementById("fractionOperation").value;
+        const fraction2 = document.getElementById("fraction2").value;
+
+        // Дроби можно считать через eval и замену / на деление, но стоит использовать библиотеки для точности
+        const result = eval(fraction1.replace("/", "/") + operation + fraction2.replace("/", "/"));
+        document.getElementById("fractionResult").textContent = "Результат: " + result;
+    }
+
+    // Тригонометрический калькулятор
+    function calculateTrigonometry() {
+        const angle = parseFloat(document.getElementById("angle").value);
+        const operation = document.getElementById("trigOperation").value;
+        let result;
+
+        const angleInRadians = angle * (Math.PI / 180);
+        switch (operation) {
+            case 'sin':
+                result = Math.sin(angleInRadians);
+                break;
+            case 'cos':
+                result = Math.cos(angleInRadians);
+                break;
+            case 'tan':
+                result = Math.tan(angleInRadians);
+                break;
+        }
+        document.getElementById("trigResult").textContent = "Результат: " + result;
+    }
+
+    // Графический калькулятор
+    let chart;
+
+    function drawGraph() {
+        const functionInput = document.getElementById("functionInput").value;
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        if (chart) {
+            chart.destroy();
+        }
+
+        const data = {
+            labels: [],
+            datasets: [{
+                label: 'График функции',
+                data: [],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false,
+            }]
+        };
+
+        for (let x = -10; x <= 10; x += 0.1) {
+            const y = eval(functionInput.replace(/x/g, x));
+            data.labels.push(x);
+            data.datasets[0].data.push(y);
+        }
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'X',
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Y',
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function plotPoint() {
+        const x = parseFloat(document.getElementById("xCoord").value);
+        const y = parseFloat(document.getElementById("yCoord").value);
+
+        if (chart) {
+            chart.data.datasets.push({
+                label: 'Точка',
+                data: [{ x: x, y: y }],
+                backgroundColor: 'rgba(255, 0, 0, 1)',
+                borderColor: 'rgba(255, 0, 0, 1)',
+                borderWidth: 1,
+                pointRadius: 5,
+            });
+            chart.update();
+        }
+    }
 </script>
 </body>
 </html>
